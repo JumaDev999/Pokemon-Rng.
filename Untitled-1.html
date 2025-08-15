@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Polemon RNG</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #4a90e2; /* simple blue */
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    #container {
+      border: 5px solid #003366; /* dark blue border */
+      background-color: #4a90e2; /* same blue inside container */
+      padding: 20px;
+      width: 100%;
+      max-width: 900px;
+      box-sizing: border-box;
+      text-align: center;
+      color: #222;
+    }
+    h1, h2 {
+      color: #222;
+    }
+    #pack {
+      width: 220px;
+      cursor: pointer;
+    }
+    #clickCounter {
+      margin: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+    }
+    .card {
+      display: inline-block;
+      margin: 10px;
+      width: 160px;
+      height: 280px; /* more height for button */
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      overflow: hidden;
+      vertical-align: top;
+    }
+    .card img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+    .delete-btn {
+      display: block;
+      width: 140px;
+      margin: 5px auto;
+      padding: 5px 0;
+      background: #ff4c4c;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #backpack {
+      margin-top: 30px;
+    }
+    #inventory {
+      margin-top: 10px;
+    }
+    #openPackBtn {
+      margin-top: 15px;
+      padding: 10px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    #openPackBtn:hover {
+      background-color: #002244;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>🎴 Polemon RNG</h1>
+    <p>Click the button to open a pack and reveal 8 Pokémon cards!</p>
+
+    <!-- Pack image remains for style -->
+    <img src="ac569f7f-87cb-469a-8c23-58a985b92f7a.png" id="pack" alt="Pokémon Pack" />
+
+    <button id="openPackBtn" onclick="clickPack()">Open Pack</button>
+
+    <div id="clickCounter"></div>
+
+    <div id="result"></div>
+
+    <div id="backpack">
+      <h2>🎒 Your Backpack</h2>
+      <div id="inventory"></div>
+    </div>
+  </div>
+
+  <script>
+    const veryRarePokemon = [
+      "Charizard", "Blastoise", "Venusaur", "Chansey", "Alakazam",
+      "Hitmonchan", "Machamp", "Gyarados", "Raichu", "Nidoking"
+    ];
+
+    const allPokemon = [
+      "Pikachu", "Charmander", "Squirtle", "Bulbasaur", "Eevee", "Meowth", "Snorlax", "Psyduck",
+      "Jigglypuff", "Vulpix", "Machop", "Abra", "Geodude", "Rattata", "Pidgey", "Zubat",
+      "Diglett", "Growlithe", "Poliwag", "Tentacool", "Magnemite", "Doduo", "Seel", "Shellder",
+      "Krabby", "Exeggcute", "Cubone", "Koffing", "Horsea", "Staryu", "Scyther", "Electabuzz",
+      "Magmar", "Pinsir", "Tauros", "Lapras", "Ditto", "Porygon", "Omanyte", "Kabuto",
+      ...veryRarePokemon
+    ];
+
+    let backpack = JSON.parse(localStorage.getItem("polemon_backpack")) || [];
+
+    function getCardImageURL(pokemonName) {
+      const safeName = pokemonName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return `https://images.pokemontcg.io/base1/${getTCGCode(pokemonName)}.png`;
+    }
+
+    function getTCGCode(name) {
+      const cardCodes = {
+        "Charizard": "4",
+        "Blastoise": "2",
+        "Venusaur": "15",
+        "Chansey": "3",
+        "Alakazam": "1",
+        "Hitmonchan": "7",
+        "Machamp": "8",
+        "Gyarados": "6",
+        "Raichu": "14",
+        "Nidoking": "11",
+        "Pikachu": "58",
+        "Charmander": "46",
+        "Squirtle": "63",
+        "Bulbasaur": "44",
+        "Eevee": "51",
+        "Meowth": "56",
+        "Snorlax": "11",
+        "Psyduck": "53",
+        "Jigglypuff": "39",
+        "Vulpix": "68",
+        "Machop": "52",
+        "Abra": "43",
+        "Geodude": "36",
+        "Rattata": "61",
+        "Pidgey": "57",
+        "Zubat": "69",
+        "Diglett": "47",
+        "Growlithe": "48",
+        "Poliwag": "59",
+        "Tentacool": "67",
+        "Magnemite": "54",
+        "Doduo": "45",
+        "Seel": "60",
+        "Shellder": "62",
+        "Krabby": "49",
+        "Exeggcute": "50",
+        "Cubone": "46",
+        "Koffing": "53",
+        "Horsea": "42",
+        "Staryu": "65",
+        "Scyther": "10",
+        "Electabuzz": "20",
+        "Magmar": "36",
+        "Pinsir": "9",
+        "Tauros": "38",
+        "Lapras": "10",
+        "Ditto": "3",
+        "Porygon": "66",
+        "Omanyte": "55",
+        "Kabuto": "52"
+      };
+      return cardCodes[name] || "0";
+    }
+
+    function clickPack() {
+      openPack();
+    }
+
+    function openPack() {
+      for (let i = 0; i < 8; i++) {
+        let rarity = "normal";
+        const rarityRoll = Math.random();
+        if (rarityRoll < 0.10) rarity = "rainbow";
+        else if (rarityRoll < 0.30) rarity = "gold";
+
+        let pokemon;
+        if (rarity === "normal" && Math.random() < 0.05) {
+          pokemon = veryRarePokemon[Math.floor(Math.random() * veryRarePokemon.length)];
+        } else {
+          pokemon = allPokemon[Math.floor(Math.random() * allPokemon.length)];
+        }
+
+        backpack.push({ name: pokemon, rarity });
+      }
+
+      localStorage.setItem("polemon_backpack", JSON.stringify(backpack));
+      updateBackpack();
+    }
+
+    function updateBackpack() {
+      const inventory = document.getElementById("inventory");
+      inventory.innerHTML = "";
+
+      backpack.forEach((card, index) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        const imageUrl = getCardImageURL(card.name);
+
+        div.innerHTML = `
+          <img src="${imageUrl}" alt="${card.name}" title="${card.name} (${card.rarity.toUpperCase()})" />
+          <button class="delete-btn" onclick="deleteCard(${index})">Delete Card</button>
+        `;
+        inventory.appendChild(div);
+      });
+    }
+
+    function deleteCard(index) {
+      backpack.splice(index, 1);
+      localStorage.setItem("polemon_backpack", JSON.stringify(backpack));
+      updateBackpack();
+    }
+
+    updateBackpack();
+  </script>
+</body>
+</html>
