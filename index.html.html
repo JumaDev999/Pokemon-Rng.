@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pokemon RNG</title>
+  <style>
+    body {
+      background-color: #4a90e2;
+      font-family: sans-serif;
+      text-align: center;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .open-btn {
+      background-color: #003566;
+      color: white;
+    }
+    #backpack {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .card {
+      background-color: transparent;
+      color: black;
+      border-radius: 10px;
+      padding: 0;
+      width: 140px;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    .card img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .delete-btn {
+      background-color: red;
+      color: white;
+      margin-top: 5px;
+      padding: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .gold-border {
+      border: 4px solid gold;
+      box-shadow: 0 0 15px gold;
+      border-radius: 10px;
+    }
+    .rainbow-border {
+      border: 4px solid;
+      border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet) 1;
+      box-shadow: 0 0 20px violet;
+      border-radius: 10px;
+    }
+    .rarity-label {
+      font-weight: bold;
+      margin-top: 5px;
+      font-size: 0.9rem;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Pokemon RNG</h1>
+  <p>Click the button to open a pack and reveal 8 Pokémon cards!</p>
+
+  <button class="btn open-btn" onclick="openPack()">Open Pack</button>
+
+  <div id="backpack"></div>
+
+  <script>
+    const cards = [
+      // 150 Pokémon cards with rarities
+      // Very Rare (20)
+      { url: 'https://images.pokemontcg.io/base1/4.png', rarity: 'Very Rare' },   // Charizard
+      { url: 'https://images.pokemontcg.io/base1/10.png', rarity: 'Very Rare' },  // Mewtwo
+      { url: 'https://images.pokemontcg.io/base1/2.png', rarity: 'Very Rare' },   // Blastoise
+      { url: 'https://images.pokemontcg.io/base1/15.png', rarity: 'Very Rare' },  // Venusaur
+      { url: 'https://images.pokemontcg.io/base1/12.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/13.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/14.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/1.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/6.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/7.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/9.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/18.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/20.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/21.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/16.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/17.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/3.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/19.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/5.png', rarity: 'Very Rare' },
+      { url: 'https://images.pokemontcg.io/base1/11.png', rarity: 'Very Rare' },
+
+      // Rare (30)
+      { url: 'https://images.pokemontcg.io/base1/8.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/24.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/25.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/26.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/27.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/28.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/29.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/30.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/31.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/32.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/33.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/34.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/35.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/36.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/37.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/38.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/39.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/40.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/41.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/42.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/43.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/44.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/45.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/46.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/47.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/48.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/49.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/50.png', rarity: 'Rare' },
+      { url: 'https://images.pokemontcg.io/base1/51.png', rarity: 'Rare' },
+
+      // Uncommon (40)
+      { url: 'https://images.pokemontcg.io/base1/52.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/53.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/54.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/55.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/56.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/57.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/58.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/59.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/60.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/61.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/62.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/63.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/64.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/65.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/66.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/67.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/68.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/69.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/70.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/71.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/72.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/73.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/74.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/75.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/76.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/77.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/78.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/79.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/80.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/81.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/82.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/83.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/84.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/85.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/86.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/87.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/88.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/89.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/90.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/91.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/92.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/93.png', rarity: 'Uncommon' },
+      { url: 'https://images.pokemontcg.io/base1/94.png', rarity: 'Uncommon' },
+
+      // Common (60)
+      { url: 'https://images.pokemontcg.io/base1/95.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/96.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/97.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/98.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/99.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/100.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/101.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/102.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/103.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/104.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/105.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/106.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/107.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/108.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/109.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/110.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/111.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/112.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/113.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/114.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/115.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/116.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/117.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/118.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/119.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/120.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/121.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/122.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/123.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/124.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/125.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/126.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/127.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/128.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/129.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/130.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/131.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/132.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/133.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/134.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/135.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/136.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/137.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/138.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/139.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/140.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/141.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/142.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/143.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/144.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/145.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/146.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/147.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/148.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/149.png', rarity: 'Common' },
+      { url: 'https://images.pokemontcg.io/base1/150.png', rarity: 'Common' }
+    ];
+
+    function openPack() {
+      const backpack = document.getElementById('backpack');
+      for (let i = 0; i < 8; i++) {
+        const cardData = cards[Math.floor(Math.random() * cards.length)];
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+
+        const chance = Math.random();
+        if (chance < 0.10) {
+          cardDiv.classList.add('rainbow-border');
+        } else if (chance < 0.30) {
+          cardDiv.classList.add('gold-border');
+        }
+
+        const img = document.createElement('img');
+        img.src = cardData.url;
+        img.onclick = () => {
+          let rarityLabel = cardDiv.querySelector('.rarity-label');
+          if (!rarityLabel) {
+            rarityLabel = document.createElement('div');
+            rarityLabel.className = 'rarity-label';
+            rarityLabel.textContent = cardData.rarity;
+            cardDiv.appendChild(rarityLabel);
+            setTimeout(() => { rarityLabel.remove(); }, 10000);
+          }
+        };
+
+        const btn = document.createElement('button');
+        btn.className = 'delete-btn';
+        btn.textContent = 'Delete Card';
+        btn.onclick = () => cardDiv.remove();
+
+        cardDiv.appendChild(img);
+        cardDiv.appendChild(btn);
+        backpack.appendChild(cardDiv);
+      }
+    }
+  </script>
+
+</body>
+</html>
